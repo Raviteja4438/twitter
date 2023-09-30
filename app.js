@@ -39,7 +39,7 @@ const getFollowingPeopleIdsOfUser = async (username) => {
 
   const followingPeople = await db.all(getTheFollowingPeopleQuery);
   const arrayOfIds = followingPeople.map(
-    (eachUser) => eachUser.following_user - id
+    (eachUser) => eachUser.following_user_id
   );
   return arrayOfIds;
 };
@@ -106,7 +106,7 @@ app.post("/register/", async (request, response) => {
     } else {
       const hashedPassword = await bcrypt.hash(password, 10);
       const createUserQuery = `INSERT INTO user(username, password, name, gender)
-            VALUES ('${username}', '${hashedPassword}', '${name}', '${gender}')`;
+            VALUES('${username}', '${hashedPassword}', '${name}', '${gender}')`;
       await db.run(createUserQuery);
       response.send("User created successfully");
     }
@@ -261,7 +261,7 @@ app.post("/user/tweets/", authentication, async (request, response) => {
   const { tweet } = request.body;
   const userId = parseInt(request.userId);
   const dateTime = new Date().toJSON().substring(0, 19).replace("T", " ");
-  const createTweetQuery = `INNER INTO tweet(tweet, user_id, date_time)
+  const createTweetQuery = `INSERT INTO tweet(tweet, user_id, date_time)
     VALUES('${tweet}', '${userId}', '${dateTime}')
     `;
   await db.run(createTweetQuery);
